@@ -2,7 +2,7 @@
   "name": "Snowflake Plugin",
   "version": "1.0.0",
   "published": true,
-  "release_branch": ["main"],
+  "release_branch": ["Snowflake_Plugin"],
   "api_name": "scott_f_dev",
   "external_link": "",
   "description": "Development Snowflake plugin for Scott F — sample toolbar items, views, modals, and setup assistant fields.",
