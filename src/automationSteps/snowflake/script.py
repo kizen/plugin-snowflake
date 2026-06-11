@@ -6,6 +6,10 @@ import uuid
 SNOWFLAKE_ACCOUNT = "yhjtexo-kv44817"  # host without .snowflakecomputing.com
 SNOWFLAKE_PAT = "eyJraWQiOiI0MDk5NjA2NDEzNjU2MDcwIiwiYWxnIjoiRVMyNTYifQ.eyJwIjoiMjQ0MzU1NTg4OjYyNTU1MDI5NzY1IiwiaXNzIjoiU0Y6MTAxNiIsImV4cCI6MTc4ODgwMDg1OH0.fc9xJVwZLLmN76D_ewx51O_iWtXAg-o6kCeUSmay5XY2R4W6QGt1FwWw99orvmYG61i335Cr6UEfz8tR4K_ylA"  # Your PAT from ALTER USER ... ADD PROGRAMMATIC ACCESS TOKEN
 
+outputs.log(f'Secret: {secrets}')
+secret_name = next(iter(key for key in secrets if key.endswith("_webhook_url")), None)
+SNOWFLAKE_PAT = secrets[secret_name]
+
 conn = http.client.HTTPSConnection(f"{SNOWFLAKE_ACCOUNT}.snowflakecomputing.com")
 payload = json.dumps({
   "statement": "SELECT * FROM TEST_DB.PUBLIC.TEST_CUSTOMERS",
