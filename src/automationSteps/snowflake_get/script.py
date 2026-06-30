@@ -10,11 +10,14 @@ outputs.log(f'Secret: {secrets}')
 secret_name = next(iter(key for key in secrets if key.endswith("_webhook_url")), None)
 SNOWFLAKE_PAT = secrets[secret_name]
 
+INPUT_DATABASE = inputs.database
+INPUT_QUERY = inputs.query
+
 conn = http.client.HTTPSConnection(f"{SNOWFLAKE_ACCOUNT}.snowflakecomputing.com")
 payload = json.dumps({
-  "statement": "SELECT * FROM TEST_DB.PUBLIC.TEST_CUSTOMERS",
+  "statement": INPUT_QUERY,
   "timeout": 1000,
-  "database": "TEST_DB",
+  "database": INPUT_DATABASE,
   "schema": "PUBLIC",
   "warehouse": "COMPUTE_WH",
   "bindings": {},
@@ -34,6 +37,6 @@ conn.request("POST", f"/api/v2/statements?requestId={request_id}&async=false", p
 res = conn.getresponse()
 
 outputs.log(res)
-
-data = res.read()
-outputs.log(data.decode("utf-8"))
+response_data = json.loads(res.read())
+outputs.log(f"Data: {response_data['data']}")
+outputs.result = response_data['data']
