@@ -4,7 +4,7 @@
   "plugin_description": "Snowflake connector",
   "action_type": "snowflake_get_data",
   "runtime": "python 3.12",
-  "secrets": ["webhook_url"],
+  "secrets": ["snowflake_connection"],
   "inputs": [
     {
       "name": "database",
