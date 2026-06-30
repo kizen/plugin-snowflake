@@ -1,23 +1,48 @@
 {
-  "name": "Snowflake",
-  "action_description": "Connects to Snowflake and executes a query",
+  "name": "Get Data",
+  "action_description": "Connects to Snowflake and executes a query to get data",
   "plugin_description": "Snowflake connector",
-  "action_type": "snowflake_query",
+  "action_type": "snowflake_get_data",
   "runtime": "python 3.12",
-  "secrets": ["webhook_url"],
-  "inputs": [],
-  "outputs": [
+  "secrets": ["snowflake_connection"],
+  "inputs": [
     {
-      "name": "target",
-      "label": "Target",
+      "name": "database",
+      "label": "Database",
       "data_type": "string",
       "required": true,
-      "input_source": "object_field",
-      "hint_field_name": "target",
-      "hint_related_object_field_name": null,
-      "script_alias": "target",
-      "conflict_resolution": "overwrite",
-      "create_field_options": false
+      "script_alias": "database"
+    },
+    {
+      "name": "query",
+      "label": "Query",
+      "data_type": "string",
+      "required": true,
+      "script_alias": "query"
+    },
+    {
+      "name": "return_single_value",
+      "label": "Return Single Value",
+      "data_type": "boolean",
+      "required": true,
+      "script_alias": "result_single_value",
+      "default": true
+    },
+    {
+      "name": "connection_secret_tag",
+      "label": "Connection Secret Tag",
+      "data_type": "string",
+      "required": true,
+      "script_alias": "connection_secret_tag"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "result",
+      "label": "Result",
+      "data_type": "string",
+      "required": true,
+      "script_alias": "result"
     }
   ]
 }
