@@ -66,14 +66,14 @@ def connect_to_snowflake():
     outputs.log(res)
     response_data = json.loads(res.read())
     outputs.log(f"Data: {response_data['data']}")
-    rows = response_data.get('data', [])
+    rows = response_data['data']
 
     if not rows:
       outputs.log("Query returned no rows")
       outputs.result = ""
     elif inputs.return_single_value:
       if len(rows) == 1 and len(rows[0]) == 1:
-        single_value = next(iter(rows[0].values()))
+        single_value = next(iter(rows[0]))
         outputs.log(f"Single value result: {single_value}")
         outputs.result = str(single_value)
       else:
