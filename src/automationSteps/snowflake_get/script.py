@@ -1,6 +1,7 @@
 import http.client
 import json
 import uuid
+
 def connect_to_snowflake():
   outputs.log(f'Secret: {secrets}')
   secret_connection = next(iter(key for key in secrets if key.endswith("snowflake_connection")), None)
@@ -25,7 +26,7 @@ def connect_to_snowflake():
   conn_data = {}
   if inputs.connection_secret_tag:
     if inputs.connection_secret_tag not in SNOWFLAKE_CONNECTION:
-        raise ValueError(f"Connection secret tag {inputs.connection_secret_tag} not found in SNOWFLAKE_CONNECTION")
+      raise ValueError(f"Connection secret tag {inputs.connection_secret_tag} not found in SNOWFLAKE_CONNECTION")
     conn_data = SNOWFLAKE_CONNECTION[inputs.connection_secret_tag]
   else:
     # If no connection secret tag is provided, SNOWFLAKE_CONNECTION isn't nested
@@ -65,7 +66,21 @@ def connect_to_snowflake():
     outputs.log(res)
     response_data = json.loads(res.read())
     outputs.log(f"Data: {response_data['data']}")
-    outputs.result = response_data['data']
+    rows = response_data.get('data', [])
+
+    if not rows:
+      outputs.log("Query returned no rows")
+      outputs.result = ""
+    elif inputs.return_single_value:
+      if len(rows) == 1 and len(rows[0]) == 1:
+        single_value = next(iter(rows[0].values()))
+        outputs.log(f"Single value result: {single_value}")
+        outputs.result = str(single_value)
+      else:
+        raise ValueError("Expected a single value result, but the query returned multiple rows or columns.")
+    else:
+      outputs.log(f"Multiple values/rows returned: {len(rows)} rows")
+      outputs.result = str(rows)
   except Exception as e:
     raise ValueError(f"Error while using Snowflake connection: {e}")
 
