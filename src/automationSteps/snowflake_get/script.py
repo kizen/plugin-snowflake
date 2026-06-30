@@ -21,8 +21,7 @@ payload = json.dumps({
   "schema": "PUBLIC",
   "warehouse": "COMPUTE_WH",
   "bindings": {},
-  "parameters": {},
-  "role": "SYSADMIN"
+  "parameters": {}
 })
 headers = {
   'User-Agent': 'myApplication/1.0',
