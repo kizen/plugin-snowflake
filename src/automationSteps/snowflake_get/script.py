@@ -1,9 +1,9 @@
 import http.client
 import json
 import uuid
+import re
 
 def connect_to_snowflake():
-  outputs.log(f'Secret: {secrets}')
   secret_connection = next(iter(key for key in secrets if key.endswith("snowflake_connection")), None)
   if not secret_connection:
       raise ValueError("No snowflake_connection secret found")
@@ -22,7 +22,7 @@ def connect_to_snowflake():
   cleaned_json = SNOWFLAKE_CONNECTION_RAW.translate(SMART_QUOTE_MAP)
   SNOWFLAKE_CONNECTION = json.loads(cleaned_json)
 
-  # Now actually use it - pick which env you want
+  # Pick which env you want
   conn_data = {}
   if inputs.connection_secret_tag:
     if inputs.connection_secret_tag not in SNOWFLAKE_CONNECTION:
@@ -39,6 +39,11 @@ def connect_to_snowflake():
 
   INPUT_DATABASE = inputs.database
   INPUT_QUERY = inputs.query
+
+  # Basic SQL guardrail - reject obvious write operations before hitting DB
+  write_keywords = r'^\s*(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|COPY|CALL|DO)\b'
+  if re.match(write_keywords, INPUT_QUERY, re.IGNORECASE):
+    raise ValueError("Write operations are not allowed. Only SELECT queries permitted.")
 
   conn = http.client.HTTPSConnection(f"{SNOWFLAKE_ACCOUNT}.snowflakecomputing.com")
   payload = json.dumps({
