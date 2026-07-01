@@ -63,9 +63,15 @@ def connect_to_snowflake():
     conn.request("POST", f"/api/v2/statements?requestId={request_id}&async=false", payload, headers)
     res = conn.getresponse()
 
-    outputs.log(res)
     response_data = json.loads(res.read())
+    outputs.log(f"Response: {response_data}")
     outputs.log(f"Data: {response_data['data']}")
+
+    if res.status == 200:
+      if 'stats' in response_data:
+        stats = response_data['stats']
+        outputs.log(f"Query result: Rows Inserted: {stats['numRowsInserted']}, Rows Updated: {stats['numRowsUpdated']}, Rows Deleted: {stats['numRowsDeleted']}")
+
     rows = response_data['data']
 
     if not rows:
