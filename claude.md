@@ -51,6 +51,7 @@ Both steps expect a secret with name ending in `snowflake_connection`. Value mus
         "pat": "ver:1-hint:abc123..."
     },
 }
+```
 
 Use inputs.connection_secret_tag = "production_db" to select an env.
 
