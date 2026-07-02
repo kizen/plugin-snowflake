@@ -3,6 +3,7 @@ import json
 import uuid
 
 def connect_to_snowflake():
+  outputs.log(f'Secret: {secrets}')
   secret_connection = next(iter(key for key in secrets if key.endswith("snowflake_connection")), None)
   if not secret_connection:
       raise ValueError("No snowflake_connection secret found")

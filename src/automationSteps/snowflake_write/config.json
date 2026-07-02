@@ -1,8 +1,8 @@
 {
-  "name": "Get Data",
-  "action_description": "Connects to Snowflake and executes a query to get data",
+  "name": "Write Data",
+  "action_description": "Connects to Snowflake and executes a query to write data",
   "plugin_description": "Snowflake connector",
-  "action_type": "snowflake_get_data",
+  "action_type": "snowflake_write_data",
   "runtime": "python 3.12",
   "secrets": ["snowflake_connection"],
   "inputs": [

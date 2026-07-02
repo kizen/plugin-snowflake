@@ -4,7 +4,7 @@ This directory contains two Python code steps for interacting with Snowflake via
 
 ## Files
 
-### 1. `snowflake_get`
+### 1. `snowflake_read`
 **Purpose**: Read-only queries against Snowflake. Returns query results as strings.
 
 **Key Features**
@@ -13,13 +13,13 @@ This directory contains two Python code steps for interacting with Snowflake via
 - **Multi-env support**: Reads `SNOWFLAKE_CONNECTION` secret. If `inputs.connection_secret_tag` is set, uses that nested key. Otherwise treats the secret as flat.
 - **Single value mode**: Set `inputs.return_single_value = True` to extract one cell. Throws if query returns >1 row or >1 column.
 
-### 2. `snowflake_send`  
+### 2. `snowflake_write`  
 **Purpose**: Write operations against Snowflake. Returns stats + results.
 
 **Key Features**
 - **No SQL guardrail**: Intentionally allows `INSERT`, `UPDATE`, `DELETE`, etc. Use with caution.
 - **DML stats logging**: Logs `numRowsInserted`, `numRowsUpdated`, `numRowsDeleted` from response `stats` block on 200 status.
-- **Same secret/env handling** as `snowflake_get`
+- **Same secret/env handling** as `snowflake_read`
 - **Single value mode** also supported for write queries that return a value, e.g. `INSERT ... RETURNING id`
 
 ## Required Secrets

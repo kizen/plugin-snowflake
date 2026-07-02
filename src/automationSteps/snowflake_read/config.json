@@ -1,8 +1,8 @@
 {
-  "name": "Send Data",
-  "action_description": "Connects to Snowflake and executes a query to send data",
+  "name": "Read Data",
+  "action_description": "Connects to Snowflake and executes a query to read data",
   "plugin_description": "Snowflake connector",
-  "action_type": "snowflake_send_data",
+  "action_type": "snowflake_read_data",
   "runtime": "python 3.12",
   "secrets": ["snowflake_connection"],
   "inputs": [
