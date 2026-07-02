@@ -81,7 +81,6 @@ Do:
 Don't:
 - Pass user-generated SQL directly to snowflake_send without validation. No guardrail exists.
 - Use snowflake_get for writes - it will reject them pre-flight.
-- Store the PAT anywhere except the secrets manager. Note: snowflake_send currently logs secrets - remove outputs.log(f'Secret: {secrets}') in prod.
 
 **Error Handling**
 Both steps raise ValueError on:
