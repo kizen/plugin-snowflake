@@ -1,6 +1,6 @@
 {
   "name": "Snowflake Connection",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "published": true,
   "release_branch": ["Snowflake_Plugin"],
   "api_name": "snowflake_connection",
