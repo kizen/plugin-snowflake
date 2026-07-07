@@ -3,7 +3,6 @@ import json
 import uuid
 
 def connect_to_snowflake():
-  outputs.log(f'Secret: {secrets}')
   secret_connection = next(iter(key for key in secrets if key.endswith("snowflake_connection")), None)
   if not secret_connection:
       raise ValueError("No snowflake_connection secret found")
@@ -32,6 +31,11 @@ def connect_to_snowflake():
     # If no connection secret tag is provided, SNOWFLAKE_CONNECTION isn't nested
     conn_data = SNOWFLAKE_CONNECTION
 
+  REQUIRED_KEYS = ('warehouse', 'schema', 'account', 'pat')
+  missing_keys = [key for key in REQUIRED_KEYS if key not in conn_data]
+  if missing_keys:
+      raise ValueError(f"Snowflake connection secret is missing required key(s): {', '.join(missing_keys)}")
+
   SNOWFLAKE_WAREHOUSE = conn_data['warehouse']
   SNOWFLAKE_SCHEMA = conn_data['schema']
   SNOWFLAKE_ACCOUNT = conn_data['account']
@@ -43,7 +47,7 @@ def connect_to_snowflake():
   conn = http.client.HTTPSConnection(f"{SNOWFLAKE_ACCOUNT}.snowflakecomputing.com")
   payload = json.dumps({
     "statement": INPUT_QUERY,
-    "timeout": 1000,
+    "timeout": 30,
     "database": INPUT_DATABASE,
     "schema": SNOWFLAKE_SCHEMA,
     "warehouse": SNOWFLAKE_WAREHOUSE,
@@ -71,22 +75,28 @@ def connect_to_snowflake():
       if 'stats' in response_data:
         stats = response_data['stats']
         outputs.log(f"Query result: Rows Inserted: {stats['numRowsInserted']}, Rows Updated: {stats['numRowsUpdated']}, Rows Deleted: {stats['numRowsDeleted']}")
-
+        outputs.result_status = f"Rows Inserted: {stats['numRowsInserted']}, Rows Updated: {stats['numRowsUpdated']}, Rows Deleted: {stats['numRowsDeleted']}"
     rows = response_data['data']
 
     if not rows:
       outputs.log("Query returned no rows")
       outputs.result = ""
+      if 'stats' not in response_data:
+        outputs.result_status = "No rows returned"
     elif inputs.return_single_value:
       if len(rows) == 1 and len(rows[0]) == 1:
         single_value = next(iter(rows[0]))
         outputs.log(f"Single value result: {single_value}")
         outputs.result = str(single_value)
+        if 'stats' not in response_data:
+          outputs.result_status = "Single value returned"
       else:
         raise ValueError("Expected a single value result, but the query returned multiple rows or columns.")
     else:
       outputs.log(f"Multiple values/rows returned: {len(rows)} rows")
       outputs.result = str(rows)
+      if 'stats' not in response_data:
+        outputs.result_status = "Multiple values returned"
   except Exception as e:
     raise ValueError(f"Error while using Snowflake connection: {e}")
 

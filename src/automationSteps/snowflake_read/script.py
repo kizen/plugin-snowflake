@@ -31,6 +31,11 @@ def connect_to_snowflake():
   else:
     # If no connection secret tag is provided, SNOWFLAKE_CONNECTION isn't nested
     conn_data = SNOWFLAKE_CONNECTION
+  
+  REQUIRED_KEYS = ('warehouse', 'schema', 'account', 'pat')
+  missing_keys = [key for key in REQUIRED_KEYS if key not in conn_data]
+  if missing_keys:
+      raise ValueError(f"Snowflake connection secret is missing required key(s): {', '.join(missing_keys)}")
 
   SNOWFLAKE_WAREHOUSE = conn_data['warehouse']
   SNOWFLAKE_SCHEMA = conn_data['schema']
@@ -48,7 +53,7 @@ def connect_to_snowflake():
   conn = http.client.HTTPSConnection(f"{SNOWFLAKE_ACCOUNT}.snowflakecomputing.com")
   payload = json.dumps({
     "statement": INPUT_QUERY,
-    "timeout": 1000,
+    "timeout": 30,
     "database": INPUT_DATABASE,
     "schema": SNOWFLAKE_SCHEMA,
     "warehouse": SNOWFLAKE_WAREHOUSE,
