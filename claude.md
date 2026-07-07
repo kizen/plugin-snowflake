@@ -19,6 +19,7 @@ This directory contains two Python code steps for interacting with Snowflake via
 **Key Features**
 - **No SQL guardrail**: Intentionally allows `INSERT`, `UPDATE`, `DELETE`, etc. Use with caution.
 - **DML stats logging**: Logs `numRowsInserted`, `numRowsUpdated`, `numRowsDeleted` from response `stats` block on 200 status.
+- **Result status output**: Sets `outputs.result_status` describing what happened - the DML stats string when `stats` is present, otherwise `"No rows returned"`, `"Single value returned"`, or `"Multiple values returned"`.
 - **Same secret/env handling** as `snowflake_read`
 - **Single value mode** also supported for write queries that return a value, e.g. `INSERT ... RETURNING id`
 
@@ -63,8 +64,9 @@ connection_secret_tag	string	Optional key for multi-env secrets	            Both
 return_single_value	    bool	If true, expect 1x1 result and return as string	Both
 
 **Outputs**
-Output	    Type	Description
-result	    string	Query results. Single value or str(rows) for multi-row
+Output	        Type	Description	                                        Used By
+result	        string	Query results. Single value or str(rows) for multi-row	Both
+result_status	string	Human-readable summary of what happened (DML stats or row-count description)	snowflake_write only
 
 **API Details**
 - **Endpoint**: POST https://{account}.snowflakecomputing.com/api/v2/statements
@@ -75,7 +77,7 @@ result	    string	Query results. Single value or str(rows) for multi-row
 **Usage Guidelines**
 Do:
 - Use snowflake_read for all read operations. The regex guardrail prevents accidental writes.
-- Use snowflake_write for DML/DDL. Check outputs.log for numRowsInserted/Updated/Deleted.
+- Use snowflake_write for DML/DDL. Check outputs.log for numRowsInserted/Updated/Deleted, or outputs.result_status for a summary string.
 - Set return_single_value=True for SELECT COUNT(*), SELECT MAX(id), etc.
 
 Don't:
