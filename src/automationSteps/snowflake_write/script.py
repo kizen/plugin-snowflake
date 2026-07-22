@@ -21,7 +21,7 @@ def connect_to_snowflake():
   cleaned_json = SNOWFLAKE_CONNECTION_RAW.translate(SMART_QUOTE_MAP)
   SNOWFLAKE_CONNECTION = json.loads(cleaned_json)
 
-  # Now actually use it - pick which env you want
+  # Pick which env you want
   conn_data = {}
   if inputs.connection_secret_tag:
     if inputs.connection_secret_tag not in SNOWFLAKE_CONNECTION:
