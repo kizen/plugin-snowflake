@@ -1,5 +1,6 @@
 {
   "name": "Read Data",
+  "api_name": "snowflakeread",
   "action_description": "Connects to Snowflake and executes a query to read data",
   "plugin_description": "Snowflake connector",
   "action_type": "snowflake_read_data",
