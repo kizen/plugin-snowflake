@@ -2,7 +2,7 @@
   "name": "Snowflake Connection",
   "version": "1.0.1",
   "published": true,
-  "release_branch": ["Snowflake_Plugin"],
+  "release_branches": ["main"],
   "api_name": "snowflake_connection",
   "external_link": "",
   "description": "Connect to an external Snowflake database to power Agentic Workflows with real-time data lookups.",
