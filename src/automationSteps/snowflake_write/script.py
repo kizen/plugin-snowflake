@@ -23,7 +23,7 @@ def connect_to_snowflake():
 
   # Pick which env you want
   conn_data = {}
-  if inputs.connection_secret_tag:
+  if getattr(inputs, "connection_secret_tag", None):
     if inputs.connection_secret_tag not in SNOWFLAKE_CONNECTION:
       raise ValueError(f"Connection secret tag {inputs.connection_secret_tag} not found in SNOWFLAKE_CONNECTION")
     conn_data = SNOWFLAKE_CONNECTION[inputs.connection_secret_tag]
